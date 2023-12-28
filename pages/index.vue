@@ -1,72 +1,98 @@
 <template>
-  <div class="container">
-    <div class="row justify-content-center align-items-center">
-      <div class="col-auto">
-        <Button label="prev" @click="prevTrack"></Button>
-      </div>
-      <div class="col-6 mt-3">
-        <Card :pt="{ root: { class: 'bg-image' } }">
-          <template #title>
-            {{ selectedSong.title }}
-            <div class="float-end">
-              <Button :icon="isFav ? 'pi pi-heart-fill' : 'pi pi-heart'" severity="warning" text rounded
-                aria-label="Favorite" @click="toggleFav" v-tooltip.bottom="{
-                  value: 'Add to favorites',
+  <div class="main-bg">
+    <div class="main-bg-image">
+      <img class="bg-image" :src="`${assetPath}/images/${selectedSong.image}`" alt="background image">
+    </div>
+
+    <div class="container" style="position:relative; height:100vh;">
+      <div class="row justify-content-center align-items-center h-75">
+        <div class="col-12 w-75 mx-0 px-0">
+          <Card :pt="{
+            root: {
+              class: 'shadow-lg',
+              style: {
+                backgroundImage: `linear-gradient(to bottom, rgba(27, 0, 32, 0.52), rgba(40, 13, 53, 0.73)), url(${assetPath}/images/${selectedSong.image})`,
+                backgroundSize: 'cover',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center'
+              }
+            }
+          }
+            ">
+            <template #title>
+              {{ selectedSong.title }}
+              <div class="float-end">
+                <Button icon="pi pi-heart-fill" severity="warning" text rounded aria-label="Favorite" @click="toggleFav"
+                  v-tooltip.bottom="{
+                    value: 'Remove from favorites',
+                    pt: { text: 'tt-text' }
+                  }" v-if="isFav" />
+                <Button icon="pi pi-heart" severity="warning" text rounded aria-label="Favorite" @click="toggleFav"
+                  v-tooltip.bottom="{
+                    value: 'Add to favorites',
+                    pt: { text: 'tt-text' }
+                  }
+                    " v-else />
+              </div>
+            </template>
+            <template #subtitle>
+              <div class="row align-items-center"></div>
+              <i class="pi pi-star"></i>
+              <a class="text-light" :href="selectedSong.page" target="_blank" style="text-decoration: none;"
+                v-tooltip.bottom="{
+                  value: 'Go to artist page',
                   pt: { text: 'tt-text' }
-                }" />
-            </div>
-          </template>
-          <template #subtitle>
-            <div class="row align-items-center"></div>
-            <i class="pi pi-star"></i>
-            <a class="text-light" href="https://en.wikipedia.org/wiki/Porter_Robinson" target="_blank"
-              style="text-decoration: none;" v-tooltip.bottom="{
-                value: 'Go to artist page',
-                pt: { text: 'tt-text' }
-              }">&nbsp;{{ selectedSong.artists }}
-            </a>
-          </template>
-          <template #footer>
-            <div class="row justify-content-start align-items-center">
-              <div class="col-auto float-start">
-                <Button icon="pi pi-stop" severity="danger" aria-label="stop" size="small" outlined @click="stopTrack"
-                  :disabled="isLoading" />
-                <Button class="ms-2" icon="pi pi-caret-right" severity="warning" aria-label="play" size="small" outlined
-                  @click="playTrack" :disabled="isLoading" v-if="!isPlaying" />
-                <Button class="ms-2" icon="pi pi-pause" severity="warning" aria-label="play" size="small" outlined
-                  @click="pauseTrack" :disabled="isLoading" v-else />
-                <!-- <Button class="ms-2" severity="primary" aria-label="Playback speed" :label="`x${rate}`" size="small"
+                }
+                  ">&nbsp;{{ selectedSong.artists }}
+              </a>
+            </template>
+            <template #footer>
+              <div class="row justify-content-center align-items-center">
+                <div class="col-auto">
+                  <Button class="w-full" icon="pi pi-stop" severity="danger" aria-label="stop" text outlined
+                    @click="stopTrack" :disabled="isLoading" />
+                  <Button class="ms-2" icon="pi pi-caret-right" severity="warning" aria-label="play" text outlined
+                    @click="playTrack" :disabled="isLoading" v-if="!isPlaying" />
+                  <Button class="ms-2" icon="pi pi-pause" severity="warning" aria-label="play" text outlined
+                    @click="pauseTrack" :disabled="isLoading" v-else />
+                  <!-- <Button class="ms-2" severity="primary" aria-label="Playback speed" :label="`x${rate}`" size="small"
                   outlined @click="" :disabled="isLoading" /> -->
-              </div>
-              <div class="col-8">
-                <div class="mt-2">
-                  <Slider v-model="duration" @update:modelValue="seekTime()" :min="min" :max="max" class="w-full"
-                    :disabled="isLoading || !isPlaying" style="cursor: pointer;" :pt="{
-                      root: { stlye: 'width:328px;' },
-                      handle: { style: 'display:none;' },
-                      range: { class: 'slider-red' }
-                    }" />
                 </div>
-                <div class=" mt-1">
-                  <small class="text-light float-start">{{ playbackTime }}</small>
-                  <small class="text-light rate-text float-end" style="cursor: pointer;" @click="changeSpeed"
-                    v-tooltip.bottom="{
-                      value: 'Change the playback rate',
-                      pt: { text: 'tt-text' }
-                    }">x{{ rate }}</small>
+                <div class="col-8">
+                  <div class="mt-2">
+                    <Slider v-model="duration" @update:modelValue="seekTime()" :min="min" :max="max"
+                      :disabled="isLoading || !isPlaying" style="cursor: pointer;" :pt="{
+                        root: { style: 'height:7px;' },
+                        handle: { style: 'display:none;' },
+                        range: { class: 'slider-red' }
+                      }
+                        " />
+                  </div>
+                  <div class="mt-1">
+                    <small class="text-light float-start">{{ playbackTime }}</small>
+                    <small class="text-light rate-text float-end" style="cursor: pointer;" @click="changeSpeed"
+                      v-tooltip.bottom="{
+                        value: 'Change the playback rate',
+                        pt: { text: 'tt-text' }
+                      }
+                        ">x{{ rate }}</small>
+                  </div>
+
+                </div>
+                <div class="col-auto">
+                  <Button aria-label="prev" icon="pi pi-angle-double-left" severity="danger" size="small"
+                    @click="prevTrack" text outlined></Button>
+                  <Button class="ms-2" aria-label="next" icon="pi pi-angle-double-right" severity="danger" size="small"
+                    @click="nextTrack" text outlined></Button>
+                  <Knob class="ms-2 float-end" v-model="vol" @dblclick="toggleMuteTrack()" @update:modelValue="setVolume"
+                    :min="volMin" :max="volMax" valueColor="var(--yellow-200)" :showValue="false" :strokeWidth="14"
+                    :size="43" :disabled="isLoading"
+                    v-tooltip="{ value: 'Change Volume.\nDouble Click to Mute.', pt: { text: { class: 'tt-text' }, range: { style: 'display: none;' }, svg: { style: 'display: none;' } } }" />
                 </div>
               </div>
-              <div class="col-auto">
-                <Knob class="float-end" v-model="vol" @update:modelValue="setVolume" :min="volMin" :max="volMax"
-                  rangeColor="var(--red-100)" valueColor="var(--yellow-200)" :showValue="false" :strokeWidth="15"
-                  :size="40" :disabled="isLoading" v-tooltip="{ value: 'Change Volume', pt: { text: 'tt-text' } }" />
-              </div>
-            </div>
-          </template>
-        </Card>
-      </div>
-      <div class="col-auto">
-        <Button label="next" @click="nextTrack"></Button>
+            </template>
+          </Card>
+        </div>
       </div>
     </div>
   </div>
@@ -83,7 +109,8 @@ import Knob from 'primevue/knob';
 import { Howl, Howler } from 'howler';
 
 const songIndex = ref<number>(0)
-const vol = ref<number>(100)
+const vol = ref<number>(75)
+const tempVol = ref<number>(75)
 const volMax = ref<number>(100)
 const volMin = ref<number>(0)
 const duration = ref<number>(0);
@@ -96,12 +123,16 @@ const isLoading = ref<boolean>(true)
 const intervalID = ref<any>()
 const playbackTime = ref<string>('00:00')
 const rate = ref<number>(1)
+const assetPath: string = "/_nuxt/assets"
+const isMuted = ref<boolean>(false)
 
 type Music = {
   id: number;
   title: string;
   artists: string;
+  page: string;
   fname: string;
+  image: string;
 }
 
 const music = ref<Array<Music>>([
@@ -109,19 +140,41 @@ const music = ref<Array<Music>>([
     id: 1,
     title: 'Everything Goes On (Kanta Remix)',
     artists: 'Porter Robinson',
-    fname: 'Everything Goes On Kanta Remix.mp3'
+    page: 'https://open.spotify.com/artist/3dz0NnIZhtKKeXZxLOxCam',
+    fname: 'Everything Goes On Kanta Remix.mp3',
+    image: 'one.jpg'
   },
   {
     id: 2,
     title: 'Inside',
     artists: 'Kanta',
-    fname: 'Inside.mp3'
+    page: 'https://www.youtube.com/@Kanta001',
+    fname: 'Inside.mp3',
+    image: 'two.jpg'
   },
   {
     id: 3,
     title: 'City Nights',
     artists: 'Kanta',
-    fname: 'Kanta - City Nights.mp3'
+    page: 'https://www.youtube.com/@Kanta001',
+    fname: 'Kanta - City Nights.mp3',
+    image: 'three.jpg'
+  },
+  {
+    id: 4,
+    title: 'Polar Quarantine',
+    artists: 'Kanta',
+    page: 'https://www.youtube.com/@Kanta001',
+    fname: 'Kanta - Polar Quarantine.mp3',
+    image: 'four.jpg'
+  },
+  {
+    id: 5,
+    title: 'Spring',
+    artists: 'Kanta',
+    page: 'https://www.youtube.com/@Kanta001',
+    fname: 'Kanta - Spring.mp3',
+    image: 'five.jpg'
   },
 ])
 
@@ -130,7 +183,7 @@ const sound = ref<any>()
 
 const initHowl = () => {
   sound.value = new Howl({
-    src: [`/_nuxt/assets/audio/${selectedSong.value.fname}`],
+    src: [`${assetPath}/audio/${selectedSong.value.fname}`],
     preload: true,
     onplay: () => {
       isPlaying.value = true
@@ -138,26 +191,41 @@ const initHowl = () => {
       intervalID.value = updateTime()
     },
     onpause: () => {
-      isPlaying.value = false
       clearInterval(intervalID.value)
+      isPlaying.value = false
     },
     onend: () => {
-      isPlaying.value = false
+      // clearInterval(intervalID.value)
+      // isPlaying.value = false
       rate.value = 1
-      clearInterval(intervalID.value)
-
+      nextTrack()
     },
     onseek: () => {
       intervalID.value = updateTime()
     },
     onstop: () => {
+      clearInterval(intervalID.value)
       isPlaying.value = false
       duration.value = 0
       rate.value = 1
       playbackTime.value = '00:00'
-      clearInterval(intervalID.value)
     }
   })
+}
+
+const toggleMuteTrack = () => {
+  isMuted.value = !isMuted.value
+  sound.value.mute(isMuted.value, trackID.value)
+
+  if (isMuted.value) {
+    tempVol.value = vol.value
+    vol.value = 0
+  }
+  else {
+    vol.value = tempVol.value
+    setVolume()
+  }
+
 }
 
 const nextTrack = () => {
@@ -177,8 +245,8 @@ const nextTrack = () => {
 const prevTrack = () => {
   clearInterval(intervalID.value)
   sound.value.stop(trackID.value)
-  if (songIndex.value <= music.value.length - 1) {
-    songIndex.value = 0
+  if (songIndex.value <= 0) {
+    songIndex.value = music.value.length - 1
   }
   else {
     songIndex.value--
@@ -201,7 +269,6 @@ const getPlaybackTime = (maxDuration: number, currDuration: number) => {
 
 const updateTime = () => {
   getPlaybackTime(max.value, duration.value)
-
   return setInterval(() => {
     getPlaybackTime(max.value, duration.value)
     duration.value = sound.value.seek(trackID.value)
@@ -213,13 +280,20 @@ const seekTime = () => {
 }
 
 const setVolume = () => {
+  if (isMuted.value) toggleMuteTrack()
+
   const newVol = vol.value / 100
   sound.value.volume(newVol)
 }
 
 const playTrack = () => {
   isLoading.value = true
+
   trackID.value = sound.value.play();
+  setVolume()
+
+  if (isMuted.value) sound.value.mute(isMuted.value, trackID.value)
+
   isLoading.value = false
 }
 
@@ -270,13 +344,53 @@ onMounted(() => {
   color: black;
 }
 
-.bg-image {
-  background-image:
-    linear-gradient(to bottom, rgba(27, 0, 32, 0.52), rgba(40, 13, 53, 0.73)),
-    url(https://picsum.photos/1920/1080);
-
-  width: 550px;
-  height: 220px;
-  background-size: cover;
+.main-bg {
+  background-image: linear-gradient(rgba(26, 8, 41, 0.5) 0%, rgba(0, 0, 0, 0.5));
+  width: 100vw;
+  height: 100vh;
+  margin: 0 auto;
 }
+
+.bg-image {
+  display: block;
+  filter: blur(5px);
+  width: 100vw;
+  height: 100vh;
+  margin: auto;
+}
+
+.main-bg-image {
+  position: absolute;
+  display: inline-block;
+}
+
+.main-bg-image::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: inline-block;
+  opacity: 5;
+  background: -moz-linear-gradient(top, rgba(26, 8, 41, 0.5) 0%, rgba(0, 0, 0, 0.5) 100%);
+  /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(26, 8, 41, 0.5)), color-stop(100%, rgba(0, 0, 0, 0.5)));
+  /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, rgba(26, 8, 41, 0.5) 0%, rgba(0, 0, 0, 0.5) 100%);
+  /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, rgba(26, 8, 41, 0.5) 0%, rgba(0, 0, 0, 0.5) 100%);
+  /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, rgba(26, 8, 41, 0.5) 0%, rgba(0, 0, 0, 0.5) 100%);
+  /* IE10+ */
+  background: linear-gradient(to bottom, rgba(26, 8, 41, 0.5) 0%, rgba(0, 0, 0, 0.5) 100%);
+  /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#002f4b', endColorstr='#00000000', GradientType=0);
+  /* IE6-9 */
+}
+
+/* .card-bg {
+  background-size: cover;
+  background-position: center;
+} */
 </style>

@@ -5,7 +5,7 @@
     </div>
 
     <div class="container" style="position:relative; height:100vh;">
-      <div class="row justify-content-center align-items-center h-75">
+      <div class="row justify-content-center align-items-center h-50">
         <div class="col-12 w-75 mx-0 px-0">
           <Card :pt="{
             root: {
@@ -48,7 +48,7 @@
             </template>
             <template #footer>
               <div class="row justify-content-center align-items-center">
-                <div class="col-auto">
+                <div class="col-5 col-lg-auto order-2 order-lg-1">
                   <Button class="w-full" icon="pi pi-stop" severity="danger" aria-label="stop" text outlined
                     @click="stopTrack" :disabled="isLoading" />
                   <Button class="ms-2" icon="pi pi-caret-right" severity="warning" aria-label="play" text outlined
@@ -58,7 +58,7 @@
                   <!-- <Button class="ms-2" severity="primary" aria-label="Playback speed" :label="`x${rate}`" size="small"
                   outlined @click="" :disabled="isLoading" /> -->
                 </div>
-                <div class="col-8">
+                <div class="col-12 col-lg-8 order-1 order-lg-2">
                   <div class="mt-2">
                     <Slider v-model="duration" @update:modelValue="seekTime()" :min="min" :max="max"
                       :disabled="isLoading || !isPlaying" style="cursor: pointer;" :pt="{
@@ -79,7 +79,7 @@
                   </div>
 
                 </div>
-                <div class="col-auto">
+                <div class="col-7 col-lg-auto order-3">
                   <Button aria-label="prev" icon="pi pi-angle-double-left" severity="danger" size="small"
                     @click="prevTrack" text outlined></Button>
                   <Button class="ms-2" aria-label="next" icon="pi pi-angle-double-right" severity="danger" size="small"

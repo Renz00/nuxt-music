@@ -1,7 +1,7 @@
 <template>
   <div class="main-bg">
     <div class="main-bg-image">
-      <img class="bg-image" :src="`${assetPath}/images/${selectedSong.image}`" alt="background image">
+      <img class="bg-image" :src="`${assetPathImages}/${selectedSong.image}`" alt="background image">
     </div>
 
     <div class="container" style="position:relative; height:100vh;">
@@ -11,7 +11,7 @@
             root: {
               class: 'shadow-lg',
               style: {
-                backgroundImage: `linear-gradient(to bottom, rgba(27, 0, 32, 0.52), rgba(40, 13, 53, 0.73)), url(${assetPath}/images/${selectedSong.image})`,
+                backgroundImage: `linear-gradient(to bottom, rgba(27, 0, 32, 0.52), rgba(40, 13, 53, 0.73)), url(${assetPathImages}/${selectedSong.image})`,
                 backgroundSize: 'cover',
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center'
@@ -94,6 +94,28 @@
           </Card>
         </div>
       </div>
+      <div class="row">
+        <div class="card xl:flex xl:justify-content-center">
+          <OrderList v-model="music" listStyle="height:auto" dataKey="id">
+            <template #header> List of Songs </template>
+            <template #item="slotProps">
+              <div class="flex flex-wrap p-2 align-items-center gap-3">
+                <img class="w-4rem shadow-2 flex-shrink-0 border-round"
+                  :src="`${assetPathImages}/${slotProps.item.image}`" :alt="slotProps.item.title"
+                  style="height:100px; width:180px;" />
+                <div class="flex-1 flex flex-column gap-2">
+                  <span class="font-bold">{{ slotProps.item.title }}</span>
+                  <div class="flex align-items-center gap-2">
+                    <i class="pi pi-tag text-sm"></i>
+                    <span>{{ slotProps.item.arists }}</span>
+                  </div>
+                </div>
+                <span class="font-bold text-900">$ {{ slotProps.item.duration }}</span>
+              </div>
+            </template>
+          </OrderList>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -108,6 +130,8 @@ import Knob from 'primevue/knob';
 // @ts-ignore
 import { Howl, Howler } from 'howler';
 
+const assetPathAudio: string = "/_nuxt/assets/audio"
+const assetPathImages: string = "/_nuxt/assets/images"
 const songIndex = ref<number>(0)
 const vol = ref<number>(75)
 const tempVol = ref<number>(75)
@@ -123,16 +147,17 @@ const isLoading = ref<boolean>(true)
 const intervalID = ref<any>()
 const playbackTime = ref<string>('00:00')
 const rate = ref<number>(1)
-const assetPath: string = "/_nuxt/assets"
 const isMuted = ref<boolean>(false)
 
 type Music = {
   id: number;
   title: string;
   artists: string;
+  duration: string;
   page: string;
   fname: string;
   image: string;
+  isFavorite: boolean;
 }
 
 const music = ref<Array<Music>>([
@@ -140,15 +165,19 @@ const music = ref<Array<Music>>([
     id: 1,
     title: 'Everything Goes On (Kanta Remix)',
     artists: 'Porter Robinson',
+    duration: '3:24',
     page: 'https://open.spotify.com/artist/3dz0NnIZhtKKeXZxLOxCam',
+    isFavorite: false,
     fname: 'Everything Goes On Kanta Remix.mp3',
-    image: 'one.jpg'
+    image: 'one.jpg',
   },
   {
     id: 2,
     title: 'Inside',
     artists: 'Kanta',
+    duration: '3:28',
     page: 'https://www.youtube.com/@Kanta001',
+    isFavorite: false,
     fname: 'Inside.mp3',
     image: 'two.jpg'
   },
@@ -156,7 +185,9 @@ const music = ref<Array<Music>>([
     id: 3,
     title: 'City Nights',
     artists: 'Kanta',
+    duration: '2:50',
     page: 'https://www.youtube.com/@Kanta001',
+    isFavorite: false,
     fname: 'Kanta - City Nights.mp3',
     image: 'three.jpg'
   },
@@ -164,7 +195,9 @@ const music = ref<Array<Music>>([
     id: 4,
     title: 'Polar Quarantine',
     artists: 'Kanta',
+    duration: '3:16',
     page: 'https://www.youtube.com/@Kanta001',
+    isFavorite: false,
     fname: 'Kanta - Polar Quarantine.mp3',
     image: 'four.jpg'
   },
@@ -172,7 +205,9 @@ const music = ref<Array<Music>>([
     id: 5,
     title: 'Spring',
     artists: 'Kanta',
+    duration: '3:01',
     page: 'https://www.youtube.com/@Kanta001',
+    isFavorite: false,
     fname: 'Kanta - Spring.mp3',
     image: 'five.jpg'
   },
@@ -183,7 +218,7 @@ const sound = ref<any>()
 
 const initHowl = () => {
   sound.value = new Howl({
-    src: [`${assetPath}/audio/${selectedSong.value.fname}`],
+    src: [`${assetPathAudio}/${selectedSong.value.fname}`],
     preload: true,
     onplay: () => {
       isPlaying.value = true
@@ -208,7 +243,7 @@ const initHowl = () => {
       isPlaying.value = false
       duration.value = 0
       rate.value = 1
-      playbackTime.value = '00:00'
+      playbackTime.value = selectedSong.value.duration
     }
   })
 }
@@ -324,6 +359,7 @@ const changeSpeed = () => {
 onMounted(() => {
   initHowl()
   Howler.autoUnlock = false;
+  playbackTime.value = selectedSong.value.duration
   isLoading.value = false
 })
 

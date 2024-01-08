@@ -4,7 +4,7 @@
       <img class="bg-image" :src="`${assetPathImages}/${selectedSong.image}`" alt="background image">
     </div>
 
-    <div class="container" style="position:relative; height:100vh;">
+    <div class="container b-red" style="position:relative; height:100vh;">
       <div class="row justify-content-center align-items-center h-50">
         <div class="col-12 w-75 mx-0 px-0">
           <Card :pt="{
@@ -94,23 +94,26 @@
           </Card>
         </div>
       </div>
-      <div class="row">
+      <div class="row-auto">
         <div class="card xl:flex xl:justify-content-center">
           <OrderList v-model="music" listStyle="height:auto" dataKey="id">
             <template #header> List of Songs </template>
             <template #item="slotProps">
-              <div class="flex flex-wrap p-2 align-items-center gap-3">
-                <img class="w-4rem shadow-2 flex-shrink-0 border-round"
-                  :src="`${assetPathImages}/${slotProps.item.image}`" :alt="slotProps.item.title"
-                  style="height:100px; width:180px;" />
-                <div class="flex-1 flex flex-column gap-2">
-                  <span class="font-bold">{{ slotProps.item.title }}</span>
-                  <div class="flex align-items-center gap-2">
-                    <i class="pi pi-tag text-sm"></i>
-                    <span>{{ slotProps.item.arists }}</span>
+              <div class="row">
+                <div class="col-3">
+                  <img class="w-4rem shadow-2 flex-shrink-0 border-round"
+                    :src="`${assetPathImages}/${slotProps.item.image}`" :alt="slotProps.item.title"
+                    style="height:100px; width:180px;" />
+                  <span class="font-bold text-900">$ {{ slotProps.item.duration }}</span>
+                </div>
+                <div class="col-9 b-red">
+                  <div class="row">
+                    <span class="font-bold">{{ slotProps.item.title }}</span><br />
+                  </div>
+                  <div class="row">
+                    <span class="font-bold">{{ slotProps.item.artists }}</span><br />
                   </div>
                 </div>
-                <span class="font-bold text-900">$ {{ slotProps.item.duration }}</span>
               </div>
             </template>
           </OrderList>

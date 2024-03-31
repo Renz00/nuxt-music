@@ -8,7 +8,7 @@
       />
     </div>
 
-    <div class="container" style="position: relative; height: 78vh">
+    <div class="container" style="position: relative; height: 85vh">
       <div class="row justify-content-center align-items-center h-50">
         <div class="col-12 w-75 mx-0 px-0">
           <Card
@@ -19,7 +19,7 @@
                   backgroundImage: `linear-gradient(to bottom, rgba(27, 0, 32, 0.52), rgba(40, 13, 53, 0.73)), url(${assetPathImages}/${selectedSong.image})`,
                   backgroundSize: 'cover',
                   backgroundRepeat: 'no-repeat',
-                  backgroundPosition: 'center',
+                  backgroundPosition: 'top',
                 },
               },
             }"
@@ -189,9 +189,51 @@
       </div>
       <div class="row justify-content-center">
         <div class="col-12 w-75">
-          <Card style="background-color: rgba(255, 0, 0, 0.1)">
+          <Card style="background-color: rgba(40, 13, 53, 0.4)">
             <template #title>
-              <h5>List of Songs</h5>
+              <div class="row align-items-center">
+                <div class="col-8">
+                  <h5><b>List of Songs</b></h5>
+                </div>
+                <div class="col-4 text-end">
+                  <Button
+                    class="ms-2"
+                    aria-label="Shuffle list of songs"
+                    labe="Shuffle"
+                    icon="pi pi-arrow-right-arrow-left"
+                    severity="warning"
+                    size="small"
+                    text
+                    outlined
+                    v-tooltip="{
+                      value: 'Shuffle song list.',
+                      pt: {
+                        text: { class: 'tt-text' },
+                        range: { style: 'display: none;' },
+                        svg: { style: 'display: none;' },
+                      },
+                    }"
+                  />
+                  <Button
+                    class="ms-2"
+                    aria-label="Repeat after list ends"
+                    labe="Repeat"
+                    icon="pi pi-replay"
+                    severity="warning"
+                    size="small"
+                    text
+                    outlined
+                    v-tooltip="{
+                      value: 'Repeat list after reaching end.',
+                      pt: {
+                        text: { class: 'tt-text' },
+                        range: { style: 'display: none;' },
+                        svg: { style: 'display: none;' },
+                      },
+                    }"
+                  />
+                </div>
+              </div>
             </template>
             <template #content>
               <DataView
@@ -199,7 +241,7 @@
                 :paginator="music.length > 5"
                 :rows="5"
                 :pt="{
-                  content: { style: 'background-color: rgba(255, 0, 0, 0.1)' },
+                  content: { style: 'background-color: rgba(40, 13, 53, 0)' },
                 }"
               >
                 <template #list="slotProps">
@@ -207,12 +249,11 @@
                     v-for="(item, index) in slotProps.items"
                     :key="index"
                     class="col-12"
-                    style="background-color: rgba(255, 0, 0, 0.1)"
                   >
                     <div class="row align-items-center pb-2">
                       <div class="col-4">{{ item.title }}</div>
                       <div class="col-4">{{ item.duration }}</div>
-                      <div class="col-4">
+                      <div class="col-4 text-end">
                         <Button
                           class="ms-2"
                           aria-label="play selected track"

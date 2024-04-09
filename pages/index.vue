@@ -1,186 +1,95 @@
 <template>
   <div class="main-bg">
     <div class="main-bg-image">
-      <img
-        class="bg-image"
-        :src="`${assetPathImages}/${selectedSong.image}`"
-        alt="background image"
-      />
+      <img class="bg-image" :src="`${assetPathImages}/${selectedSong.image}`" alt="background image" />
     </div>
 
     <div class="container" style="position: relative; height: 85vh">
       <div class="row justify-content-center align-items-center h-50">
         <div class="col-12 w-75 mx-0 px-0">
-          <Card
-            :pt="{
-              root: {
-                class: 'shadow-lg',
-                style: {
-                  backgroundImage: `linear-gradient(to bottom, rgba(27, 0, 32, 0.52), rgba(40, 13, 53, 0.73)), url(${assetPathImages}/${selectedSong.image})`,
-                  backgroundSize: 'cover',
-                  backgroundRepeat: 'no-repeat',
-                  backgroundPosition: 'top',
-                },
-              },
-            }"
-          >
+          <Card :pt="{
+        root: {
+          class: 'shadow-lg',
+          style: {
+            backgroundImage: `linear-gradient(to bottom, rgba(27, 0, 32, 0.52), rgba(40, 13, 53, 0.73)), url(${assetPathImages}/${selectedSong.image})`,
+            backgroundSize: 'cover',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'top',
+          },
+        },
+      }">
             <template #title>
               {{ selectedSong.title }}
               <div class="float-end">
-                <Button
-                  icon="pi pi-heart-fill"
-                  severity="warning"
-                  text
-                  rounded
-                  aria-label="Favorite"
-                  @click="toggleFav"
+                <Button icon="pi pi-heart-fill" severity="warning" text rounded aria-label="Favorite" @click="toggleFav"
                   v-tooltip.bottom="{
-                    value: 'Remove from favorites',
-                    pt: { text: 'tt-text' },
-                  }"
-                  v-if="isFav"
-                />
-                <Button
-                  icon="pi pi-heart"
-                  severity="warning"
-                  text
-                  rounded
-                  aria-label="Favorite"
-                  @click="toggleFav"
+        value: 'Remove from favorites',
+        pt: { text: 'tt-text' },
+      }" v-if="isFav" />
+                <Button icon="pi pi-heart" severity="warning" text rounded aria-label="Favorite" @click="toggleFav"
                   v-tooltip.bottom="{
-                    value: 'Add to favorites',
-                    pt: { text: 'tt-text' },
-                  }"
-                  v-else
-                />
+        value: 'Add to favorites',
+        pt: { text: 'tt-text' },
+      }" v-else />
               </div>
             </template>
             <template #subtitle>
               <div class="row align-items-center"></div>
               <i class="pi pi-star"></i>
-              <a
-                class="text-light"
-                :href="selectedSong.page"
-                target="_blank"
-                style="text-decoration: none"
+              <a class="text-light" :href="selectedSong.page" target="_blank" style="text-decoration: none"
                 v-tooltip.bottom="{
-                  value: 'Go to artist page',
-                  pt: { text: 'tt-text' },
-                }"
-                >&nbsp;{{ selectedSong.artists }}
+        value: 'Go to artist page',
+        pt: { text: 'tt-text' },
+      }">&nbsp;{{ selectedSong.artists }}
               </a>
             </template>
             <template #footer>
               <div class="row justify-content-center align-items-center">
                 <div class="col-5 col-lg-auto order-2 order-lg-1">
-                  <Button
-                    class="w-full"
-                    icon="pi pi-stop"
-                    severity="danger"
-                    aria-label="stop"
-                    text
-                    outlined
-                    @click="stopTrack"
-                    :disabled="isLoading"
-                  />
-                  <Button
-                    class="ms-2"
-                    icon="pi pi-caret-right"
-                    severity="warning"
-                    aria-label="play"
-                    text
-                    outlined
-                    @click="playTrack"
-                    :disabled="isLoading"
-                    v-if="!isPlaying"
-                  />
-                  <Button
-                    class="ms-2"
-                    icon="pi pi-pause"
-                    severity="warning"
-                    aria-label="play"
-                    text
-                    outlined
-                    @click="pauseTrack"
-                    :disabled="isLoading"
-                    v-else
-                  />
+                  <Button class="w-full" icon="pi pi-stop" severity="danger" aria-label="stop" text outlined
+                    @click="stopTrack" :disabled="isLoading" />
+                  <Button class="ms-2" icon="pi pi-caret-right" severity="warning" aria-label="play" text outlined
+                    @click="playTrack" :disabled="isLoading" v-if="!isPlaying" />
+                  <Button class="ms-2" icon="pi pi-pause" severity="warning" aria-label="play" text outlined
+                    @click="pauseTrack" :disabled="isLoading" v-else />
                   <!-- <Button class="ms-2" severity="primary" aria-label="Playback speed" :label="`x${rate}`" size="small"
                   outlined @click="" :disabled="isLoading" /> -->
                 </div>
                 <div class="col-12 col-lg-8 order-1 order-lg-2">
                   <div class="mt-2">
-                    <Slider
-                      v-model="duration"
-                      @update:modelValue="seekTime()"
-                      :min="min"
-                      :max="max"
-                      :disabled="isLoading || !isPlaying"
-                      style="cursor: pointer"
-                      :pt="{
-                        root: { style: 'height:7px;' },
-                        handle: { style: 'display:none;' },
-                        range: { class: 'slider-red' },
-                      }"
-                    />
+                    <Slider v-model="duration" @update:modelValue="seekTime()" :min="min" :max="max"
+                      :disabled="isLoading || !isPlaying" style="cursor: pointer" :pt="{
+        root: { style: 'height:7px;' },
+        handle: { style: 'display:none;' },
+        range: { class: 'slider-red' },
+      }" />
                   </div>
                   <div class="mt-1">
                     <small class="text-light float-start">{{
-                      playbackTime
-                    }}</small>
-                    <small
-                      class="text-light rate-text float-end"
-                      style="cursor: pointer"
-                      @click="changeSpeed"
+        playbackTime
+      }}</small>
+                    <small class="text-light rate-text float-end" style="cursor: pointer" @click="changeSpeed"
                       v-tooltip.bottom="{
-                        value: 'Change the playback rate',
-                        pt: { text: 'tt-text' },
-                      }"
-                      >x{{ rate }}</small
-                    >
+          value: 'Change the playback rate',
+          pt: { text: 'tt-text' },
+        }">x{{ rate }}</small>
                   </div>
                 </div>
                 <div class="col-7 col-lg-auto order-3">
-                  <Button
-                    aria-label="prev"
-                    icon="pi pi-angle-double-left"
-                    severity="danger"
-                    size="small"
-                    @click="prevTrack"
-                    text
-                    outlined
-                  ></Button>
-                  <Button
-                    class="ms-2"
-                    aria-label="next"
-                    icon="pi pi-angle-double-right"
-                    severity="danger"
-                    size="small"
-                    @click="nextTrack"
-                    text
-                    outlined
-                  ></Button>
-                  <Knob
-                    class="ms-2 float-end"
-                    v-model="vol"
-                    @dblclick="toggleMuteTrack()"
-                    @update:modelValue="setVolume"
-                    :min="volMin"
-                    :max="volMax"
-                    valueColor="var(--yellow-200)"
-                    :showValue="false"
-                    :strokeWidth="14"
-                    :size="43"
-                    :disabled="isLoading"
-                    v-tooltip="{
-                      value: 'Change Volume.\nDouble Click to Mute.',
-                      pt: {
-                        text: { class: 'tt-text' },
-                        range: { style: 'display: none;' },
-                        svg: { style: 'display: none;' },
-                      },
-                    }"
-                  />
+                  <Button aria-label="prev" icon="pi pi-angle-double-left" severity="danger" size="small"
+                    @click="prevTrack" text outlined></Button>
+                  <Button class="ms-2" aria-label="next" icon="pi pi-angle-double-right" severity="danger" size="small"
+                    @click="nextTrack" text outlined></Button>
+                  <Knob class="ms-2 float-end" v-model="vol" @dblclick="toggleMuteTrack()"
+                    @update:modelValue="setVolume" :min="volMin" :max="volMax" valueColor="var(--yellow-200)"
+                    :showValue="false" :strokeWidth="14" :size="43" :disabled="isLoading" v-tooltip="{
+        value: 'Change Volume.\nDouble Click to Mute.',
+        pt: {
+          text: { class: 'tt-text' },
+          range: { style: 'display: none;' },
+          svg: { style: 'display: none;' },
+        },
+      }" />
                 </div>
               </div>
             </template>
@@ -189,13 +98,14 @@
       </div>
       <div class="row justify-content-center">
         <div class="col-12 w-75">
-          <Card style="background-color: rgba(40, 13, 53, 0.4)">
+          <Card style="background-color: rgba(40, 13, 53, 0.4);">
             <template #title>
               <div class="row align-items-center">
                 <div class="col-8">
                   <h5><b>List of Songs</b></h5>
                 </div>
                 <div class="col-4 text-end">
+<<<<<<< HEAD
                   <Button
                     @click="shuffle = !shuffle"
                     class="ms-2"
@@ -238,10 +148,31 @@
                       },
                     }"
                   />
+=======
+                  <Button class="ms-2" aria-label="Shuffle list of songs" labe="Shuffle"
+                    icon="pi pi-arrow-right-arrow-left" severity="warning" size="small" text outlined v-tooltip="{
+        value: 'Shuffle song list.',
+        pt: {
+          text: { class: 'tt-text' },
+          range: { style: 'display: none;' },
+          svg: { style: 'display: none;' },
+        },
+      }" />
+                  <Button class="ms-2" aria-label="Repeat after list ends" labe="Repeat" icon="pi pi-replay"
+                    severity="warning" size="small" text outlined v-tooltip="{
+        value: 'Repeat list after reaching end.',
+        pt: {
+          text: { class: 'tt-text' },
+          range: { style: 'display: none;' },
+          svg: { style: 'display: none;' },
+        },
+      }" />
+>>>>>>> 439c6a4ed347b25800b4d8f068f083208acbe710
                 </div>
               </div>
             </template>
             <template #content>
+<<<<<<< HEAD
               <DataView
                 :value="music"
                 :paginator="music.length > 4"
@@ -253,16 +184,18 @@
                   },
                 }"
               >
+=======
+              <DataView :value="music" :paginator="music.length > 3" :rows="3" :pt="{
+        content: { style: 'background-color: rgba(40, 13, 53, 0); height: 140px;' }
+      }">
+>>>>>>> 439c6a4ed347b25800b4d8f068f083208acbe710
                 <template #list="slotProps">
-                  <div
-                    v-for="(item, index) in slotProps.items"
-                    :key="index"
-                    class="col-12"
-                  >
+                  <div v-for="( item, index ) in  slotProps.items " :key="index" class="col-12">
                     <div class="row align-items-center pb-2">
                       <div class="col-4">{{ item.id }}. {{ item.title }}</div>
                       <div class="col-4">{{ item.duration }}</div>
                       <div class="col-4 text-end">
+<<<<<<< HEAD
                         <Button
                           class="ms-2"
                           aria-label="play selected track"
@@ -273,6 +206,10 @@
                           text
                           outlined
                         ></Button>
+=======
+                        <Button class="ms-2" aria-label="play selected track" label="Play Track" severity="danger"
+                          size="small" @click="playSelectedTrack(item.id)" text outlined></Button>
+>>>>>>> 439c6a4ed347b25800b4d8f068f083208acbe710
                       </div>
                     </div>
                   </div>
@@ -427,6 +364,7 @@ const initHowl = () => {
   });
 };
 
+<<<<<<< HEAD
 const pickRandomTrack = () => {
   let index = songIndex.value;
   // if random index is the same as current song index, retry getting random index
@@ -434,9 +372,16 @@ const pickRandomTrack = () => {
     index = Math.floor(Math.random() * Object.keys(music.value).length);
   }
   // console.log(music.value[index]);
+=======
+const playSelectedTrack = (id: number) => {
+
+  music.value.forEach((val, index) => {
+    if (val.id == id) songIndex.value = index;
+  })
+
+>>>>>>> 439c6a4ed347b25800b4d8f068f083208acbe710
   clearInterval(intervalID.value);
   sound.value.stop(trackID.value);
-  songIndex.value = index;
   selectedSong.value = music.value[songIndex.value];
   initHowl();
   playTrack();
@@ -591,10 +536,8 @@ onMounted(() => {
 }
 
 .main-bg {
-  background-image: linear-gradient(
-    rgba(26, 8, 41, 0.5) 0%,
-    rgba(0, 0, 0, 0.5)
-  );
+  background-image: linear-gradient(rgba(26, 8, 41, 0.5) 0%,
+      rgba(0, 0, 0, 0.5));
   width: 100vw;
   height: 100vh;
   margin: 0 auto;
@@ -622,54 +565,48 @@ onMounted(() => {
   height: 100%;
   display: inline-block;
   opacity: 5;
-  background: -moz-linear-gradient(
-    top,
-    rgba(26, 8, 41, 0.5) 0%,
-    rgba(0, 0, 0, 0.5) 100%
-  );
+  background: -moz-linear-gradient(top,
+      rgba(26, 8, 41, 0.5) 0%,
+      rgba(0, 0, 0, 0.5) 100%);
   /* FF3.6+ */
-  background: -webkit-gradient(
-    linear,
-    left top,
-    left bottom,
-    color-stop(0%, rgba(26, 8, 41, 0.5)),
-    color-stop(100%, rgba(0, 0, 0, 0.5))
-  );
+  background: -webkit-gradient(linear,
+      left top,
+      left bottom,
+      color-stop(0%, rgba(26, 8, 41, 0.5)),
+      color-stop(100%, rgba(0, 0, 0, 0.5)));
   /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(
-    top,
-    rgba(26, 8, 41, 0.5) 0%,
-    rgba(0, 0, 0, 0.5) 100%
-  );
+  background: -webkit-linear-gradient(top,
+      rgba(26, 8, 41, 0.5) 0%,
+      rgba(0, 0, 0, 0.5) 100%);
   /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(
-    top,
-    rgba(26, 8, 41, 0.5) 0%,
-    rgba(0, 0, 0, 0.5) 100%
-  );
+  background: -o-linear-gradient(top,
+      rgba(26, 8, 41, 0.5) 0%,
+      rgba(0, 0, 0, 0.5) 100%);
   /* Opera 11.10+ */
-  background: -ms-linear-gradient(
-    top,
-    rgba(26, 8, 41, 0.5) 0%,
-    rgba(0, 0, 0, 0.5) 100%
-  );
+  background: -ms-linear-gradient(top,
+      rgba(26, 8, 41, 0.5) 0%,
+      rgba(0, 0, 0, 0.5) 100%);
   /* IE10+ */
-  background: linear-gradient(
-    to bottom,
-    rgba(26, 8, 41, 0.5) 0%,
-    rgba(0, 0, 0, 0.5) 100%
-  );
+  background: linear-gradient(to bottom,
+      rgba(26, 8, 41, 0.5) 0%,
+      rgba(0, 0, 0, 0.5) 100%);
   /* W3C */
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#002f4b', endColorstr='#00000000', GradientType=0);
   /* IE6-9 */
 }
 
+<<<<<<< HEAD
 .p-paginator {
   background-color: rgba(40, 13, 53, 0);
 }
 
 .bold-icon {
   font-weight: bold;
+=======
+.p-paginator-bottom,
+.p-paginator {
+  background-color: rgba(40, 13, 53, 0)
+>>>>>>> 439c6a4ed347b25800b4d8f068f083208acbe710
 }
 
 /* .card-bg {

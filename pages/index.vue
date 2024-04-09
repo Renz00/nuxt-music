@@ -235,6 +235,7 @@ import DataView from "primevue/dataview";
 // @ts-ignore
 import { Howl, Howler } from "howler";
 
+//Variables
 const assetPathAudio: string = "/_nuxt/assets/audio";
 const assetPathImages: string = "/_nuxt/assets/images";
 const songIndex = ref<number>(0);

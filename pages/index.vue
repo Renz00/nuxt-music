@@ -197,10 +197,15 @@
                 </div>
                 <div class="col-4 text-end">
                   <Button
+                    @click="shuffle = !shuffle"
                     class="ms-2"
                     aria-label="Shuffle list of songs"
                     labe="Shuffle"
-                    icon="pi pi-arrow-right-arrow-left"
+                    :icon="
+                      shuffle
+                        ? 'pi pi-spin pi-arrow-right-arrow-left'
+                        : 'pi pi-arrow-right-arrow-left'
+                    "
                     severity="warning"
                     size="small"
                     text
@@ -215,16 +220,17 @@
                     }"
                   />
                   <Button
+                    @click="repeat = !repeat"
                     class="ms-2"
                     aria-label="Repeat after list ends"
                     labe="Repeat"
-                    icon="pi pi-replay"
+                    :icon="repeat ? 'pi pi-spin pi-replay' : 'pi pi-replay'"
                     severity="warning"
                     size="small"
                     text
                     outlined
                     v-tooltip="{
-                      value: 'Repeat list after reaching end.',
+                      value: 'Repeat list after reaching ends.',
                       pt: {
                         text: { class: 'tt-text' },
                         range: { style: 'display: none;' },
@@ -238,10 +244,13 @@
             <template #content>
               <DataView
                 :value="music"
-                :paginator="music.length > 5"
-                :rows="5"
+                :paginator="music.length > 4"
+                :rows="4"
                 :pt="{
-                  content: { style: 'background-color: rgba(40, 13, 53, 0)' },
+                  content: {
+                    style:
+                      'background-color: rgba(40, 13, 53, 0); height: 190px;',
+                  },
                 }"
               >
                 <template #list="slotProps">
@@ -251,7 +260,7 @@
                     class="col-12"
                   >
                     <div class="row align-items-center pb-2">
-                      <div class="col-4">{{ item.title }}</div>
+                      <div class="col-4">{{ item.id }}. {{ item.title }}</div>
                       <div class="col-4">{{ item.duration }}</div>
                       <div class="col-4 text-end">
                         <Button
@@ -260,7 +269,7 @@
                           label="Play Track"
                           severity="danger"
                           size="small"
-                          @click="playSelectedTrack(index)"
+                          @click="playSelectedTrack(item.id)"
                           text
                           outlined
                         ></Button>
@@ -307,6 +316,8 @@ const intervalID = ref<any>();
 const playbackTime = ref<string>("00:00");
 const rate = ref<number>(1);
 const isMuted = ref<boolean>(false);
+const repeat = ref<boolean>(false);
+const shuffle = ref<boolean>(false);
 
 type Music = {
   id: number;
@@ -392,6 +403,15 @@ const initHowl = () => {
       // clearInterval(intervalID.value)
       // isPlaying.value = false
       rate.value = 1;
+      if (
+        songIndex.value === Object.keys(music.value).length - 1 &&
+        repeat.value == false &&
+        shuffle.value == false
+      ) {
+        stopTrack();
+        return;
+      }
+
       nextTrack();
     },
     onseek: () => {
@@ -407,10 +427,30 @@ const initHowl = () => {
   });
 };
 
-const playSelectedTrack = (index: number) => {
+const pickRandomTrack = () => {
+  let index = songIndex.value;
+  // if random index is the same as current song index, retry getting random index
+  while (index === songIndex.value) {
+    index = Math.floor(Math.random() * Object.keys(music.value).length);
+  }
+  // console.log(music.value[index]);
   clearInterval(intervalID.value);
   sound.value.stop(trackID.value);
   songIndex.value = index;
+  selectedSong.value = music.value[songIndex.value];
+  initHowl();
+  playTrack();
+};
+
+const playSelectedTrack = (id: number) => {
+  clearInterval(intervalID.value);
+  sound.value.stop(trackID.value);
+
+  music.value.forEach((v, i) => {
+    if (v.id === id) {
+      songIndex.value = i;
+    }
+  });
   selectedSong.value = music.value[songIndex.value];
   initHowl();
   playTrack();
@@ -430,6 +470,10 @@ const toggleMuteTrack = () => {
 };
 
 const nextTrack = () => {
+  if (shuffle.value) {
+    pickRandomTrack();
+    return;
+  }
   clearInterval(intervalID.value);
   sound.value.stop(trackID.value);
   if (songIndex.value >= music.value.length - 1) {
@@ -443,6 +487,10 @@ const nextTrack = () => {
 };
 
 const prevTrack = () => {
+  if (shuffle.value) {
+    pickRandomTrack();
+    return;
+  }
   clearInterval(intervalID.value);
   sound.value.stop(trackID.value);
   if (songIndex.value <= 0) {
@@ -487,7 +535,7 @@ const setVolume = () => {
 
 const playTrack = () => {
   isLoading.value = true;
-  console.log(selectedSong.value.fname);
+  // console.log(selectedSong.value.fname);
   trackID.value = sound.value.play();
   setVolume();
 
@@ -614,6 +662,14 @@ onMounted(() => {
   /* W3C */
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#002f4b', endColorstr='#00000000', GradientType=0);
   /* IE6-9 */
+}
+
+.p-paginator {
+  background-color: rgba(40, 13, 53, 0);
+}
+
+.bold-icon {
+  font-weight: bold;
 }
 
 /* .card-bg {

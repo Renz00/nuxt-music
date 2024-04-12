@@ -139,7 +139,7 @@
               </div>
             </template>
             <template #content>
-              <DataView @page="pageChanged($event)" :value="music" :paginator="music.length > 4"
+              <DataView :value="music" :paginator="music.length > 4"
                 paginatorTemplate="FirstPageLink PrevPageLink NextPageLink LastPageLink" :rows="4" :pt="{
         content: {
           style:

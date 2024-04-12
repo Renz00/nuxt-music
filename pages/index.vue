@@ -11,10 +11,10 @@
         root: {
           class: 'shadow-lg',
           style: {
-            backgroundImage: `linear-gradient(to bottom, rgba(27, 0, 32, 0.52), rgba(40, 13, 53, 0.63)), url(${assetPathImages}/${selectedSong.image})`,
+            backgroundImage: `linear-gradient(to bottom, rgba(27, 0, 32, 0.47), rgba(40, 13, 53, 0.93)), url(${assetPathImages}/${selectedSong.image})`,
             backgroundSize: 'cover',
             backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'top',
+            backgroundPosition: 'center top',
           },
         },
       }">
@@ -100,15 +100,15 @@
         root: {
           class: 'shadow-lg',
           style: {
-            backgroundImage: `linear-gradient(to bottom, rgba(27, 0, 32, 0.52), rgba(40, 13, 53, 0.78)), url(${assetPathImages}/${selectedSong.image})`,
+            backgroundImage: `linear-gradient(3deg, rgba(0,0,0,1) 0%, rgba(21,5,37,0.5046393557422969) 90%, rgba(13,0,27,1) 100%); url(${assetPathImages}/${selectedSong.image});`,
             backgroundSize: 'cover',
             backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'bottom',
+            backgroundPosition: 'center bottom',
           },
         },
       }">
             <template #title>
-              <div class="row align-items-center">
+              <div class="row align-items-center" style="height: 2rem;">
                 <div class="col-8">
                   <h5><b>List of Songs</b></h5>
                 </div>
@@ -126,8 +126,8 @@
         },
       }" />
                   <Button @click="repeat = !repeat" class="ms-2" aria-label="Repeat after list ends" labe="Repeat"
-                    :icon="repeat ? 'pi pi-spin pi-replay' : 'pi pi-replay'" severity="warning" size="small" text
-                    outlined v-tooltip="{
+                    :icon="repeat ? 'pi pi-spin pi-sync' : 'pi pi-sync'" severity="warning" size="small" text outlined
+                    v-tooltip="{
         value: 'Repeat list after reaching ends.',
         pt: {
           text: { class: 'tt-text' },
@@ -147,7 +147,7 @@
         },
         paginator: {
           root: {
-            style: 'background-color: rgba(40, 13, 53, 0); height:35px; margin-top:3rem;',
+            style: 'background-color: rgba(40, 13, 53, 0); height:35px; margin-top:4.5rem;',
           },
           firstPageButton: {
             style: 'border: 1px solid #fff;'
@@ -178,11 +178,27 @@
                 <template #list="slotProps">
                   <div v-for="(item, index) in slotProps.items" :key="index" class="col-12 p">
                     <div class="row align-items-center pb-2">
-                      <div class="col-5">{{ item.id }}. {{ item.title }}</div>
+                      <div class="col-5">
+                        <div class="row">
+                          <div class="col-12 fw-bold">
+                            {{ item.id }}. {{ item.title }}
+                          </div>
+
+                        </div>
+                        <div class="row pl-5">
+                          <div class="col-12 fst-italic ml-8">
+                            &nbsp;&nbsp;&nbsp;&nbsp;{{ item.artists }}
+                          </div>
+
+                        </div>
+                      </div>
                       <div class="col-3">{{ item.duration }}</div>
                       <div class="col-4 text-end">
-                        <Button class="ms-2" aria-label="play selected track" label="Play Track" severity="danger"
-                          size="small" @click="playSelectedTrack(item.id)" text outlined></Button>
+                        <Button class="ms-2"
+                          :icon="music[songIndex].id == item.id && isPlaying ? 'pi pi-pause' : 'pi pi-play'"
+                          aria-label="play selected track"
+                          :label="music[songIndex].id == item.id && isPlaying ? 'Now Playing' : 'Play Track'"
+                          severity="danger" size="small" @click="playSelectedTrack(item.id)" text outlined></Button>
                       </div>
                     </div>
                   </div>

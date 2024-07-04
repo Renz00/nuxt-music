@@ -7,7 +7,7 @@ A simple music player using Nuxt. </br>
       Clone repository using git clone https://github.com/Renz00/nuxt-music.git
     </li>
     <li>
-      cd into porject directory and make sure to install the dependencies:
+      cd into project directory and make sure to install the dependencies:
     </li>
 </ol>
 

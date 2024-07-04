@@ -10,6 +10,7 @@ A simple music player using Nuxt. </br>
       cd into porject directory and make sure to install the dependencies:
     </li>
 </ol>
+
 ```bash
 # npm
 npm install

@@ -1,7 +1,7 @@
 A simple music player using Nuxt. </br>
 <b>Author:</b> Renz De la Torre
 
-## Setup
+## How to run and build locally
 <ol>
     <li>
       Clone repository using git clone https://github.com/Renz00/nuxt-music.git

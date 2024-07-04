@@ -3,7 +3,9 @@ A simple music player using Nuxt. </br>
 
 ## Setup
 
-Make sure to install the dependencies:
+Clone repository using git clone https://github.com/Renz00/nuxt-music.git
+
+cd into porject directory and make sure to install the dependencies:
 
 ```bash
 # npm
